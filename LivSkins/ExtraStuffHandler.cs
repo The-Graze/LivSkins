@@ -91,9 +91,8 @@ namespace LivSkins
             {
                 Directory.CreateDirectory(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyPictures), "Gorilla Tag"));
             }
-            string sanatizedDate = DateTime.Now.ToString() + ".png";
-            sanatizedDate = sanatizedDate.Replace("\\", "").Replace(" ","_");
-            string path = Path.Combine(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyPictures), "Gorilla Tag","Gorilla Tag" + sanatizedDate));
+            string sanatizedDate = DateTime.Now.ToString("yyyy-MM-dd_HH-mm-ss") + ".png";
+            string path = Path.Combine(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyPictures), "Gorilla Tag","Gorilla Tag_" + sanatizedDate));
             File.WriteAllBytes(path, bytes);
         }
 
