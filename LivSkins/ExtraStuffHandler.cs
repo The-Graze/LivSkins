@@ -9,16 +9,22 @@ using UnityEngine.Events;
 using Liv.Lck.Tablet;
 using System.IO;
 using CameraMode = Liv.Lck.GorillaTag.CameraMode;
+using System.Threading.Tasks;
+using System.Collections;
 namespace LivSkins
 {
     class ExtraStuffHandler : MonoBehaviour
     {
         GameObject? LeftRightButton, ExtraC, RecordButton, PictureButton;
         TextMeshPro? Lable, SkinName;
+        GtNotificationController notfifC;
         GTLckController cCont;
+
         void Start()
         {
             cCont = gameObject.GetComponent<GTLckController>();
+            notfifC = gameObject.GetComponent<GtNotificationController>();
+
             ExtraC = new GameObject("Extra Menu");
             ExtraC.transform.SetParent(transform.FindChildRecursive("Settings Group"));
             ExtraC.transform.localPosition = new Vector3(-0.07f, -0.11f, 0.1f);
@@ -51,7 +57,7 @@ namespace LivSkins
             PictureButton.transform.GetChild(1).GetChild(2).gameObject.SetActive(true);
             PictureButton.transform.FindChildRecursive("Action").GetComponent<GtColliderTriggerProcessor>()._onTriggeredEnded.RemoveAllListeners();
             PictureButton.transform.FindChildRecursive("Action").GetComponent<GtColliderTriggerProcessor>()._onTriggeredStarted.RemoveAllListeners();
-            PictureButton.transform.FindChildRecursive("Action").GetComponent<GtColliderTriggerProcessor>()._onTriggeredEnded.AddListener(TakePicture);
+            PictureButton.transform.FindChildRecursive("Action").GetComponent<GtColliderTriggerProcessor>()._onTriggeredStarted.AddListener(TakePicture);
 
             foreach (Transform button in LeftRightButton.transform.FindChildRecursive("Triggers").transform)
             {
@@ -70,7 +76,7 @@ namespace LivSkins
             }
         }
 
-        private void TakePicture()
+        public  void TakePicture()
         {
             Camera c = DecideCam();
             RenderTexture activeRenderTexture = RenderTexture.active;
@@ -91,9 +97,12 @@ namespace LivSkins
             {
                 Directory.CreateDirectory(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyPictures), "Gorilla Tag"));
             }
-            string sanatizedDate = DateTime.Now.ToString("yyyy-MM-dd_HH-mm-ss") + ".png";
-            string path = Path.Combine(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyPictures), "Gorilla Tag","Gorilla Tag_" + sanatizedDate));
+            string sanatizedDate = DateTime.Now.ToString("yyyy_MM_dd_HH_mm_ss") + ".png";
+            string path = Path.Combine(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyPictures), $"Gorilla Tag","Gorilla Tag_"+sanatizedDate));
             File.WriteAllBytes(path, bytes);
+            notfifC._notificationText.text = "PHOTO SAVED \r\nSAVED TO PHOTOS/GORILLA TAG: " + Path.GetFileNameWithoutExtension(path);
+            notfifC._notification.SetActive(true);
+            notfifC.StartCoroutine(notfifC.NotificationTimer());
         }
 
         private Camera DecideCam()
