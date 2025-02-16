@@ -100,7 +100,7 @@ namespace LivSkins
             PhotoText.text = "Done";
             yield return new WaitForSeconds(0.7f);
             PhotoText.text = "PIC";
-            yield return "Penis yummy";
+            yield return "end";
         }
 
         public  void TakePicture()
