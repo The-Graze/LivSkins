@@ -16,7 +16,7 @@ namespace LivSkins
     class ExtraStuffHandler : MonoBehaviour
     {
         GameObject? LeftRightButton, ExtraC, RecordButton, PictureButton;
-        TextMeshPro? Lable, SkinName;
+        TextMeshPro? Lable, SkinName, PhotoText;
         GtNotificationController notfifC;
         GTLckController cCont;
 
@@ -57,7 +57,10 @@ namespace LivSkins
             PictureButton.transform.GetChild(1).GetChild(2).gameObject.SetActive(true);
             PictureButton.transform.FindChildRecursive("Action").GetComponent<GtColliderTriggerProcessor>()._onTriggeredEnded.RemoveAllListeners();
             PictureButton.transform.FindChildRecursive("Action").GetComponent<GtColliderTriggerProcessor>()._onTriggeredStarted.RemoveAllListeners();
-            PictureButton.transform.FindChildRecursive("Action").GetComponent<GtColliderTriggerProcessor>()._onTriggeredStarted.AddListener(TakePicture);
+            PictureButton.transform.FindChildRecursive("Action").GetComponent<GtColliderTriggerProcessor>()._onTriggeredStarted.AddListener(StartPhotoCountdown);
+            PictureButton.transform.FindChildRecursive("Action").transform.localPosition = Vector3.zero;
+            PictureButton.transform.GetChild(1).GetChild(2).GetComponent<TextMeshPro>().text = "PIC";
+            PhotoText = PictureButton.transform.FindChildRecursive("Visuals").GetChild(2).GetComponent<TextMeshPro>();
 
             foreach (Transform button in LeftRightButton.transform.FindChildRecursive("Triggers").transform)
             {
@@ -74,6 +77,30 @@ namespace LivSkins
                     button.GetComponent<GtColliderTriggerProcessor>()._onTriggeredStarted.AddListener(Up);
                 }
             }
+        }
+
+        void StartPhotoCountdown()
+        {
+            StartCoroutine(PhotoCountdown());
+        }
+
+        IEnumerator PhotoCountdown()
+        {
+            PhotoText.text = "3";
+            yield return new WaitForSeconds(0.7f);
+            PhotoText.text = "3";
+            yield return new WaitForSeconds(0.7f);
+            PhotoText.text = "2";
+            yield return new WaitForSeconds(0.7f);
+            PhotoText.text = "2";
+            yield return new WaitForSeconds(0.7f);
+            PhotoText.text = "1";
+            yield return new WaitForSeconds(0.7f);
+            TakePicture();
+            PhotoText.text = "Done";
+            yield return new WaitForSeconds(0.7f);
+            PhotoText.text = "PIC";
+            yield return "Penis yummy";
         }
 
         public  void TakePicture()
@@ -164,16 +191,6 @@ namespace LivSkins
             if (Lable.text != "SKIN:")
             {
                 Lable.text = "Skin:";
-            }
-            if (PictureButton != null)
-            {
-                if (PictureButton.transform.GetChild(1).GetChild(2).GetComponent<TextMeshPro>() != null)
-                {
-                    if (PictureButton.transform.GetChild(1).GetChild(2).GetComponent<TextMeshPro>().text != "PIC")
-                    {
-                        PictureButton.transform.GetChild(1).GetChild(2).GetComponent<TextMeshPro>().text = "PIC";
-                    }
-                }
             }
 
         }
