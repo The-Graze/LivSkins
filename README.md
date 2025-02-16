@@ -12,7 +12,7 @@ https://github.com/user-attachments/assets/65208488-22f1-440b-ae1d-3c0eb671e1cd
 
 # How Do the Skins work?
 
-Simple Place any imae into the created "SkinImages" Folder and select in game!
+Simple Place any image into the created "SkinImages" Folder and select in game!
 
 ![{8179FCE5-FC33-40B6-B9D7-A5B1E3DA9936}](https://github.com/user-attachments/assets/d8b140d0-1e6d-4792-8d15-0913a1fbde81)
 
