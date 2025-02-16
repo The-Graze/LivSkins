@@ -1,6 +1,7 @@
 # Liv Skins
 
 Skins and Features on your LivCamera!
+(thank you to Kaiden For the amazing idea!)
 
 https://github.com/user-attachments/assets/aaf260f5-f640-4dd5-b21a-ac53847d6195
 
