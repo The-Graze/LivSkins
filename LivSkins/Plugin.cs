@@ -6,6 +6,7 @@ using System.Linq;
 using System.Reflection;
 using BepInEx;
 using BepInEx.Configuration;
+using HarmonyLib;
 using UnityEngine;
 
 namespace LivSkins
@@ -20,7 +21,7 @@ namespace LivSkins
         static bool gotSkins;
         Plugin()
         {
-            HarmonyPatches.ApplyHarmonyPatches();
+            new Harmony(PluginInfo.GUID).PatchAll(Assembly.GetExecutingAssembly());
         }
 
         public static void AddRend(Renderer renderer)

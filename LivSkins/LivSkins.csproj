@@ -27,20 +27,17 @@
     </Reference>
     <Reference Include="Cinemachine">
       <HintPath>$(GameAssemblyPath)\Cinemachine.dll</HintPath>
-    </Reference>
-    <Reference Include="clipper_library">
-      <HintPath>$(GameAssemblyPath)\clipper_library.dll</HintPath>
-    </Reference> 
-    <Reference Include="LIV.LCK" Publicize="true">
-      <HintPath>..\..\..\..\..\..\Program Files\Steam\steamapps\common\Gorilla Tag\Gorilla Tag_Data\Managed\LIV.LCK.dll</HintPath>
+	</Reference>
+    <Reference Include="LIV.LCK">
+      <HintPath>C:\Program Files\Steam\steamapps\common\Gorilla Tag\Gorilla Tag_Data\Managed\LIV.LCK.dll</HintPath>
     </Reference>
     <Reference Include="LIV.LCK_GorillaTag" Publicize="true">
-      <HintPath>..\..\..\..\..\..\Program Files\Steam\steamapps\common\Gorilla Tag\Gorilla Tag_Data\Managed\LIV.LCK_GorillaTag.dll</HintPath>
+      <HintPath>C:\Program Files\Steam\steamapps\common\Gorilla Tag\Gorilla Tag_Data\Managed\LIV.LCK_GorillaTag.dll</HintPath>
     </Reference>
-    <Reference Include="LIV.NativeAudioBridge">
-      <HintPath>..\..\..\..\..\..\Program Files\Steam\steamapps\common\Gorilla Tag\Gorilla Tag_Data\Managed\LIV.NativeAudioBridge.dll</HintPath>
+    <Reference Include="LIV.NativeAudioBridge" Publicize="true">
+      <HintPath>$(GameAssemblyPath)LIV.NativeAudioBridge.dll</HintPath>
     </Reference>
-    <Reference Include="Mono.Security">
+	  <Reference Include="Mono.Security">
       <HintPath>$(GameAssemblyPath)\Mono.Security.dll</HintPath>
     </Reference>
     <Reference Include="Oculus.Platform">
@@ -95,7 +92,7 @@
       <HintPath>$(GameAssemblyPath)\Unity.Mathematics.dll</HintPath>
     </Reference>
     <Reference Include="Unity.TextMeshPro">
-      <HintPath>..\..\..\..\..\..\Program Files\Steam\steamapps\common\Gorilla Tag\Gorilla Tag_Data\Managed\Unity.TextMeshPro.dll</HintPath>
+      <HintPath>$(GameAssemblyPath)\Unity.TextMeshPro.dll</HintPath>
     </Reference>
     <Reference Include="Unity.Timeline">
       <HintPath>$(GameAssemblyPath)\Unity.Timeline.dll</HintPath>

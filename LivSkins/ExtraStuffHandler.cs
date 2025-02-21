@@ -6,25 +6,24 @@ using TMPro;
 using System.Linq;
 using Liv.Lck.GorillaTag;
 using UnityEngine.Events;
-using Liv.Lck.Tablet;
 using System.IO;
-using CameraMode = Liv.Lck.GorillaTag.CameraMode;
 using System.Threading.Tasks;
 using System.Collections;
+using UnityEngine.Playables;
+using UnityEngine.SearchService;
 namespace LivSkins
 {
     class ExtraStuffHandler : MonoBehaviour
     {
         GameObject? LeftRightButton, ExtraC, RecordButton, PictureButton;
         TextMeshPro? Lable, SkinName, PhotoText;
-        GtNotificationController notfifC;
-        GTLckController cCont;
 
+        GtNotificationController? notfifC;
+        GTLckController? cCont;
         void Start()
         {
+            notfifC = transform.FindChildRecursive("Notification").GetComponent<GtNotificationController>();
             cCont = gameObject.GetComponent<GTLckController>();
-            notfifC = gameObject.GetComponent<GtNotificationController>();
-
             ExtraC = new GameObject("Extra Menu");
             ExtraC.transform.SetParent(transform.FindChildRecursive("Settings Group"));
             ExtraC.transform.localPosition = new Vector3(-0.07f, -0.11f, 0.1f);
@@ -46,7 +45,6 @@ namespace LivSkins
             RecordButton.transform.GetChild(1).GetChild(1).gameObject.SetActive(false);
             RecordButton.transform.GetChild(1).GetChild(2).gameObject.SetActive(true);
             RecordButton.GetComponent<GtRecordButton>()._name = "REC";
-            RecordButton.GetComponent<GtRecordButton>().RECORD_BUTTON_NAME = "REC";
 
             PictureButton = Instantiate(RecordButton, RecordButton.transform.parent);
             Destroy(PictureButton.GetComponent<GtRecordButton>());
@@ -62,19 +60,22 @@ namespace LivSkins
             PictureButton.transform.GetChild(1).GetChild(2).GetComponent<TextMeshPro>().text = "PIC";
             PhotoText = PictureButton.transform.FindChildRecursive("Visuals").GetChild(2).GetComponent<TextMeshPro>();
 
-            foreach (Transform button in LeftRightButton.transform.FindChildRecursive("Triggers").transform)
+            if (LeftRightButton != null)
             {
-                if (button.name == "Decrement")
+                foreach (Transform button in LeftRightButton.transform.FindChildRecursive("Triggers").transform)
                 {
-                    button.GetComponent<GtColliderTriggerProcessor>()._onTriggeredEnded.RemoveAllListeners();
-                    button.GetComponent<GtColliderTriggerProcessor>()._onTriggeredStarted.RemoveAllListeners();
-                    button.GetComponent<GtColliderTriggerProcessor>()._onTriggeredStarted.AddListener(Down);
-                }
-                if (button.name == "Increment")
-                {
-                    button.GetComponent<GtColliderTriggerProcessor>()._onTriggeredEnded.RemoveAllListeners();
-                    button.GetComponent<GtColliderTriggerProcessor>()._onTriggeredStarted.RemoveAllListeners();
-                    button.GetComponent<GtColliderTriggerProcessor>()._onTriggeredStarted.AddListener(Up);
+                    if (button.name == "Decrement")
+                    {
+                        button.GetComponent<GtColliderTriggerProcessor>()._onTriggeredEnded.RemoveAllListeners();
+                        button.GetComponent<GtColliderTriggerProcessor>()._onTriggeredStarted.RemoveAllListeners();
+                        button.GetComponent<GtColliderTriggerProcessor>()._onTriggeredStarted.AddListener(Down);
+                    }
+                    if (button.name == "Increment")
+                    {
+                        button.GetComponent<GtColliderTriggerProcessor>()._onTriggeredEnded.RemoveAllListeners();
+                        button.GetComponent<GtColliderTriggerProcessor>()._onTriggeredStarted.RemoveAllListeners();
+                        button.GetComponent<GtColliderTriggerProcessor>()._onTriggeredStarted.AddListener(Up);
+                    }
                 }
             }
         }
@@ -86,21 +87,21 @@ namespace LivSkins
 
         IEnumerator PhotoCountdown()
         {
-            PhotoText.text = "3";
-            yield return new WaitForSeconds(0.7f);
-            PhotoText.text = "3";
-            yield return new WaitForSeconds(0.7f);
-            PhotoText.text = "2";
-            yield return new WaitForSeconds(0.7f);
-            PhotoText.text = "2";
-            yield return new WaitForSeconds(0.7f);
-            PhotoText.text = "1";
-            yield return new WaitForSeconds(0.7f);
-            TakePicture();
-            PhotoText.text = "Done";
-            yield return new WaitForSeconds(0.7f);
-            PhotoText.text = "PIC";
-            yield return "end";
+            if (PhotoText != null)
+            {
+                PhotoText.text = "3";
+                yield return new WaitForSeconds(0.7f);
+                PhotoText.text = "2";
+                yield return new WaitForSeconds(0.7f);
+                PhotoText.text = "1";
+                yield return new WaitForSeconds(0.7f);
+
+                TakePicture();
+
+                PhotoText.text = "Done";
+                yield return new WaitForSeconds(0.7f);
+                PhotoText.text = "PIC";
+            }
         }
 
         public  void TakePicture()
@@ -127,24 +128,40 @@ namespace LivSkins
             string sanatizedDate = DateTime.Now.ToString("yyyy_MM_dd_HH_mm_ss") + ".png";
             string path = Path.Combine(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyPictures), $"Gorilla Tag","Gorilla Tag_"+sanatizedDate));
             File.WriteAllBytes(path, bytes);
-            notfifC._notificationText.text = "PHOTO SAVED \r\nSAVED TO PHOTOS/GORILLA TAG: " + Path.GetFileNameWithoutExtension(path);
-            notfifC._notification.SetActive(true);
-            notfifC.StartCoroutine(notfifC.NotificationTimer());
+        }
+        IEnumerator WaitToSetBack()
+        {
+            if (notfifC != null)
+            {
+                yield return new WaitForSeconds(notfifC._notificationShowDuration + 1);
+                notfifC._pcMessage.transform.GetChild(0).GetChild(0).GetComponent<TextMeshPro>().text = "VIDEOS";
+            }
+            else
+            {
+                yield return new WaitForSeconds(0);
+            }
         }
 
         private Camera DecideCam()
         {
-            switch (cCont._currentCameraMode)
+            if (cCont != null)
             {
-                default:
-                    return cCont._selfieCamera._camera;
-                case CameraMode.FirstPerson:
-                    return cCont._firstPersonCamera._camera;
-                    break;
-                case CameraMode.ThirdPerson:
-                    return cCont._thirdPersonCamera._camera;
-                case CameraMode.Selfie:
-                    return cCont._selfieCamera._camera;
+
+                switch (cCont._currentCameraMode)
+                {
+                    default:
+                        return cCont._selfieCamera.GetCameraComponent();
+                    case CameraMode.FirstPerson:
+                        return cCont._firstPersonCamera.GetCameraComponent();
+                    case CameraMode.ThirdPerson:
+                        return cCont._thirdPersonCamera.GetCameraComponent();
+                    case CameraMode.Selfie:
+                        return cCont._selfieCamera.GetCameraComponent();
+                }
+            }
+            else
+            {
+                return GorillaTagger.Instance.thirdPersonCamera.GetComponentInChildren<Camera>();
             }
         }
 
@@ -188,11 +205,13 @@ namespace LivSkins
                 }
                 SkinName.text = toSet;
             }
-            if (Lable.text != "SKIN:")
+            if (Lable != null)
             {
-                Lable.text = "Skin:";
+                if (Lable.text != "SKIN:")
+                {
+                    Lable.text = "Skin:";
+                }
             }
-
         }
     }
 }
