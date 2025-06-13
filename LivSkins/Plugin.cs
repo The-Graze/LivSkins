@@ -6,8 +6,11 @@ using System.Linq;
 using System.Reflection;
 using BepInEx;
 using BepInEx.Configuration;
+using GorillaLocomotion;
+using GorillaLocomotion.Gameplay;
 using HarmonyLib;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 namespace LivSkins
 {
@@ -19,6 +22,8 @@ namespace LivSkins
         public static List<Renderer> CamRenderers = new List<Renderer>();
         public static Dictionary<string, Texture> Skins = new Dictionary<string, Texture>();
         private static bool gotSkins;
+        
+        LckBodyCameraSpawner BodyCameraSpawner;
 
         private Plugin()
         {
@@ -55,7 +60,22 @@ namespace LivSkins
 
         private void FixedUpdate()
         {
-            if (!gotSkins) GetSkinImages();
+            if(!gotSkins){ GetSkinImages();}
+            else
+            {
+                if (Keyboard.current.tabKey.wasPressedThisFrame)
+                {
+                    if (!BodyCameraSpawner)
+                    {
+                        BodyCameraSpawner = GTPlayer.Instance.transform.GetComponentInChildren<LckBodyCameraSpawner>();
+                    }
+
+                    if (!BodyCameraSpawner.tabletSpawnInstance.isSpawned)
+                    {
+                        BodyCameraSpawner.SpawnCamera(GTPlayer.Instance.GetComponentInChildren<GorillaGrabber>(), Camera.main.transform);
+                    }
+                }
+            }
         }
 
         public static void AddRend(Renderer renderer)
